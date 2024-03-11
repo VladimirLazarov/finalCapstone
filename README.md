@@ -1,66 +1,65 @@
-## Amazon Review Sentiment Analysis
+# Amazon Product Review Sentiment Analyzer
 
-This project analyzes the sentiment of Amazon product reviews using spaCy and TextBlob libraries. It helps understand the overall customer perception of the products based on their reviews.
+## Description
+This project analyzes the sentiment of Amazon product reviews. It is essential for businesses to understand customer sentiment towards their products to improve customer satisfaction and product quality. This tool uses natural language processing techniques to analyze the polarity of the reviews, categorizing them as positive, negative, or neutral.
 
-**Table of Contents**
+## Table of Contents
+1. [Installation](#installation)
+2. [Usage](#usage)
+3. [Credits](#credits)
 
-* Project Description
-* Installation
-* Usage
-* Credits
+## Installation
+To install this project locally, follow these steps:
+1. Clone this repository to your local machine.
+2. Install the required dependencies:
 
-**Project Description**
 
-This Python script analyzes the sentiment of Amazon product reviews stored in a CSV file named "amazon_product_reviews.csv". It utilizes spaCy for text preprocessing and TextBlob for sentiment analysis. The script classifies each review as positive, negative, or neutral based on its polarity score.
+3. Download the dataset 'amazon_product_reviews.csv' and place it in the project directory.
 
-**Installation**
+## Usage
+Once you have installed the project, you can use it as follows:
+1. Run the provided Python script.
+2. The script will load the dataset, analyze the sentiment of each review, and print the results.
+3. You can modify the script to suit your needs, such as saving the results to a file or integrating it into a larger application.
 
-1. Make sure you have Python 3.x installed on your system.
-2. Open a terminal or command prompt and navigate to the directory containing this script and the CSV file.
-3. Install the required libraries using pip:
+Example:
+```python
+import pandas as pd
+import spacy
+from textblob import TextBlob
 
-```bash
-pip install pandas spacy textblob
-```
+# Load the dataset 
+amazon_products = pd.read_csv('amazon_product_reviews.csv', low_memory=False)
 
-4. Download a small English language model for spaCy:
+# Get info 
+print(amazon_products.info())
 
-```bash
-python -m spacy download en_core_web_sm
-```
+# Select relevant columns and remove missing values 
+amazon_products = amazon_products[['reviews.text']].dropna()
 
-**Usage**
+# Load the spaCy model
+nlp = spacy.load("en_core_web_sm")
 
-1. Run the script from the command line:
+def analyze_polarity(review_text):
+ # Preprocess the text with spaCy
+ doc = nlp(review_text)
 
-```bash
-python amazon_review_sentiment.py
-```
+ # Analyze sentiment with TextBlob
+ blob = TextBlob(review_text)
+ polarity = blob.sentiment.polarity
 
-2. The script will analyze each review in the CSV file and print the review text, polarity score, and sentiment (positive, negative, or neutral) for each review.
+ return polarity
 
-**Example Output:**
+for review_text in amazon_products['reviews.text']:
+ polarity_score = analyze_polarity(review_text)
 
-```
-Review: This product is amazing! It works exactly as advertised. 
-Polarity score: 0.8 
-Sentiment: positive
+ if polarity_score > 0:
+     sentiment = 'positive'
+ elif polarity_score < 0:
+     sentiment = 'negative'
+ else:
+     sentiment = 'neutral'
 
-Review: This product is a complete waste of money. Do not buy it! 
-Polarity score: -0.7 
-Sentiment: negative
+ print(f"Review: {review_text}\nPolarity score: {polarity_score}\nSentiment: {sentiment}\n")
 
-Review: The product is okay, but I expected better quality. 
-Polarity score: 0.2 
-Sentiment: neutral
-```
-
-**Credits**
-
-* pandas: [https://pandas.pydata.org/](https://pandas.pydata.org/)
-* spaCy: [https://spacy.io/](https://spacy.io/)
-* TextBlob: [https://textblob.readthedocs.io/en/dev/quickstart.html](https://textblob.readthedocs.io/en/dev/quickstart.html)
-
-**Note:**
-
-This script provides a basic sentiment analysis example. More advanced techniques can be used for improved accuracy.
+This project was created by Vladimir Tsvetkov. If you have any questations or suggestions please free to contact me. 
